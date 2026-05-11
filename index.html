@@ -783,7 +783,7 @@
                         <div class="label-row"><label for="vertical-mode">Modo de inicio</label></div>
                         <select id="vertical-mode" class="speed-selector" style="width: 100%;">
                             <option value="caida">Caída libre (v₀ = 0)</option>
-                            <option value="tiro">Tiro vertical (v₀ > 0)</option>
+                            <option value="tiro">Tiro vertical (v₀ editable)</option>
                         </select>
                     </div>
 
@@ -812,9 +812,10 @@
                                 <button type="button" class="step-btn step-up" data-target="vertical-viy">▲</button>
                                 <button type="button" class="step-btn step-down" data-target="vertical-viy">▼</button>
                             </div>
-                            <input type="range" id="vertical-viy-slider" min="0" max="200" value="0" step="1">
-                            <input type="number" id="vertical-viy-num" value="0" step="1">
+                            <input type="range" id="vertical-viy-slider" min="-20" max="20" value="0" step="1">
+                            <input type="number" id="vertical-viy-num" value="0" min="-20" max="20" step="1">
                         </div>
+                        <div class="control-hint">(+ hacia arriba, 0 caída libre, − hacia abajo)</div>
                     </div>
 
                     <div class="control-group">

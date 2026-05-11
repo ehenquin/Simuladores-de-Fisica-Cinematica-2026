@@ -49,7 +49,9 @@
             <div class="dashboard-grid">
                 <div class="card simulator-card" onclick="location.hash='#mru-mrua'">
                     <div class="card-status status-available">Disponible</div>
-                    <div class="card-icon mrua-icon"></div>
+                    <div class="card-icon physics-icon mrua-icon">
+                        <span>x(t)</span>
+                    </div>
                     <h3>MRU - MRUA</h3>
                     <p>Movimiento rectilíneo uniforme y uniformemente acelerado. Explorá aceleración, velocidad,
                         posición y tiempo.</p>
@@ -58,7 +60,9 @@
 
                 <div class="card simulator-card" onclick="location.hash='#encuentro'">
                     <div class="card-status status-available">Disponible</div>
-                    <div class="card-icon encuentro-icon"></div>
+                    <div class="card-icon physics-icon encuentro-icon">
+                        <span>A↔B</span>
+                    </div>
                     <h3>Encuentro en X</h3>
                     <p>Dos móviles con posiciones variables. Calculá y visualizá cuándo y dónde se encuentran.</p>
                     <span class="card-action">Abrir simulador →</span>
@@ -66,7 +70,9 @@
 
                 <div class="card simulator-card" onclick="location.hash='#tiro-oblicuo'">
                     <div class="card-status status-available">Disponible</div>
-                    <div class="card-icon tiro-icon"></div>
+                    <div class="card-icon physics-icon tiro-icon">
+                        <span>↗</span>
+                    </div>
                     <h3>Tiro Oblicuo</h3>
                     <p>Trayectoria parabólica de proyectiles bajo la influencia de la gravedad.</p>
                     <span class="card-action">Abrir simulador →</span>
@@ -74,7 +80,9 @@
 
                 <div class="card simulator-card" onclick="location.hash='#caida-libre'">
                     <div class="card-status status-available">Disponible</div>
-                    <div class="card-icon caida-icon"></div>
+                    <div class="card-icon physics-icon caida-icon">
+                        <span>g↓</span>
+                    </div>
                     <h3>Caída Libre</h3>
                     <p>Movimiento vertical bajo aceleración gravitatoria constante.</p>
                     <span class="card-action">Abrir simulador →</span>
@@ -376,9 +384,9 @@
                                 <button type="button" class="step-btn step-down" data-target="enc-teval">▼</button>
                             </div>
                             <label>t eval:</label>
-                            <input type="number" id="enc-teval-num" value="20" step="0.1" min="0">
+                            <input type="number" id="enc-teval-num" value="0" step="0.1" min="0">
                         </div>
-                        <input type="range" id="enc-teval-slider" min="0" max="50" step="0.1" value="20"
+                        <input type="range" id="enc-teval-slider" min="0" max="50" step="0.1" value="0"
                             class="teval-slider">
 
                         <div class="play-btns">
@@ -402,6 +410,9 @@
                     <!-- Representación visual de la pista -->
                     <div class="track-card card">
                         <h3>Representación en Pista</h3>
+                        <p class="track-help-text">
+                            La pista muestra la posición actual de cada móvil en el tiempo t eval, no la posición inicial.
+                        </p>
                         <div id="track-container" class="track-viz">
                             <div class="track-line"></div>
                             <div id="track-separation-line" class="track-separation-line"></div>
@@ -409,22 +420,43 @@
                             <div id="mobile-b-label" class="mobile-label mobile-label-b">xB=0m</div>
                             <div id="mobile-a-marker" class="mobile-marker marker-a" title="Móvil A">A</div>
                             <div id="mobile-b-marker" class="mobile-marker marker-b" title="Móvil B">B</div>
+                            <div id="track-origin-tick" class="track-origin-tick hidden"></div>
+
                             <div class="track-labels">
-                                <span id="track-min">-3000m</span>
-                                <span id="track-center">0m</span>
-                                <span id="track-max">3000m</span>
+                                <span id="track-min" class="track-axis-label track-axis-min">-3000m</span>
+                                <span id="track-origin" class="track-axis-label track-axis-origin hidden">0m</span>
+                                <span id="track-max" class="track-axis-label track-axis-max">3000m</span>
                             </div>
                         </div>
+
+                        <div class="track-scale-controls">
+                            <div class="track-scale-title">Escala de pista</div>
+
+                            <div class="track-scale-row">
+                                <label>X mín.</label>
+                                <input type="range" id="enc-track-min-slider" min="-10000" max="0" step="100" value="-4000">
+                                <input type="number" id="enc-track-min-num" value="-4000" step="100">
+                                <span class="unit">m</span>
+                            </div>
+
+                            <div class="track-scale-row">
+                                <label>X máx.</label>
+                                <input type="range" id="enc-track-max-slider" min="0" max="10000" step="100" value="4000">
+                                <input type="number" id="enc-track-max-num" value="4000" step="100">
+                                <span class="unit">m</span>
+                            </div>
+                        </div>
+
                         <div class="track-stats-grid">
-                            <span class="track-stat-item">xA: <strong id="track-xa">0.00</strong> <span
+                            <span class="track-stat-item">xA(t): <strong id="track-xa">0.00</strong> <span
                                     class="track-unit">m</span></span>
-                            <span class="track-stat-item">xB: <strong id="track-xb">0.00</strong> <span
+                            <span class="track-stat-item">xB(t): <strong id="track-xb">0.00</strong> <span
                                     class="track-unit">m</span></span>
-                            <span class="track-stat-item">vA: <strong id="track-va">0.00</strong> <span
+                            <span class="track-stat-item">vA(t): <strong id="track-va">0.00</strong> <span
                                     class="track-unit">m/s</span></span>
-                            <span class="track-stat-item">vB: <strong id="track-vb">0.00</strong> <span
+                            <span class="track-stat-item">vB(t): <strong id="track-vb">0.00</strong> <span
                                     class="track-unit">m/s</span></span>
-                            <span class="track-stat-item highlight">Separación Δx: <strong
+                            <span class="track-stat-item highlight">Δx(t): <strong
                                     id="track-delta">0.00</strong> <span class="track-unit">m</span></span>
                         </div>
                         <div id="encounter-badge" class="encounter-badge hidden">¡Encuentro detectado!</div>

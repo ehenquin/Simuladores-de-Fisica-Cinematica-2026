@@ -1,13 +1,13 @@
 /**
- * SIMULADORES DE FÍSICA 2026
- * Autor: Dr. Eduardo R. Henquín (Versión original Excel 2005)
- * Implementación Web: 2026
+ * SIMULADORES DE FÃƒÂSICA 2026
+ * Autor: Dr. Eduardo R. HenquÃƒÂ­n (VersiÃƒÂ³n original Excel 2005)
+ * ImplementaciÃƒÂ³n Web: 2026
  */
 
 "use strict";
 
 // =============================================================================
-// 1. ESTADO GLOBAL Y CONFIGURACIÓN
+// 1. ESTADO GLOBAL Y CONFIGURACIÃƒâ€œN
 // =============================================================================
 
 const EPS = 1e-9;
@@ -41,7 +41,7 @@ const state = {
 };
 
 // =============================================================================
-// 2. NAVEGACIÓN Y UTILIDADES DOM
+// 2. NAVEGACIÃƒâ€œN Y UTILIDADES DOM
 // =============================================================================
 
 function initNavigation() {
@@ -50,7 +50,7 @@ function initNavigation() {
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
 
-    // Manejo de cambio de sección
+    // Manejo de cambio de secciÃƒÂ³n
     const switchSection = (hash) => {
         const id = hash.replace('#', '') || 'inicio';
         state.currentSection = id;
@@ -120,7 +120,7 @@ function initVerticalIfNeeded() {
     }
 }
 
-// Sincronización Slider <-> Número mapeada
+// SincronizaciÃƒÂ³n Slider <-> NÃƒÂºmero mapeada
 function syncInputsMapped(idPrefix, idKey, stateObj, stateKey, callback) {
     const slider = document.getElementById(`${idPrefix}-${idKey}-slider`);
     const num = document.getElementById(`${idPrefix}-${idKey}-num`);
@@ -166,7 +166,7 @@ function initStepperControls() {
 
             next = Math.max(min, Math.min(max, next));
 
-            // Evitar problemas de precisión de coma flotante
+            // Evitar problemas de precisiÃƒÂ³n de coma flotante
             const decimals = step.toString().includes('.') 
                 ? step.toString().split('.')[1].length 
                 : 0;
@@ -183,12 +183,12 @@ function initStepperControls() {
 }
 
 // =============================================================================
-// 3. MOTOR MATEMÁTICO Y UTILIDADES DE ESCALA
+// 3. MOTOR MATEMÃƒÂTICO Y UTILIDADES DE ESCALA
 // =============================================================================
 
 /**
- * Resuelve ax² + bx + c = 0
- * Retorna array de raíces reales positivas
+ * Resuelve axÃ‚Â² + bx + c = 0
+ * Retorna array de raÃƒÂ­ces reales positivas
  */
 function solveQuadratic(a, b, c) {
     if (Math.abs(a) < EPS) {
@@ -199,7 +199,7 @@ function solveQuadratic(a, b, c) {
     }
 
     const disc = b * b - 4 * a * c;
-    if (disc < -EPS) return []; // Sin raíces reales
+    if (disc < -EPS) return []; // Sin raÃƒÂ­ces reales
 
     if (Math.abs(disc) < EPS) {
         const t = -b / (2 * a);
@@ -253,7 +253,7 @@ function formatAxisNumber(value, step) {
     return value.toFixed(2);
 }
 
-// Rangos específicos por magnitud
+// Rangos especÃƒÂ­ficos por magnitud
 function getAccelerationYRange(a) {
     const absA = Math.abs(a);
     const limit = Math.max(2.5, absA * 1.5);
@@ -274,7 +274,7 @@ function getPositionYRange(pointsX) {
     let max = Math.max(...vals);
     const rangeRaw = Math.max(max - min, EPS);
     const distToZero = Math.min(Math.abs(min), Math.abs(max));
-    // Incluir cero si cruza o está cerca
+    // Incluir cero si cruza o estÃƒÂ¡ cerca
     if ((min <= 0 && max >= 0) || distToZero < rangeRaw * 0.75) {
         min = Math.min(min, 0);
         max = Math.max(max, 0);
@@ -293,7 +293,7 @@ function getTrackRange(pointsA, pointsB) {
 }
 
 // =============================================================================
-// 4. CLASE DE GRÁFICOS SVG (CUSTOM)
+// 4. CLASE DE GRÃƒÂFICOS SVG (CUSTOM)
 // =============================================================================
 
 class SVGGraph {
@@ -345,7 +345,7 @@ class SVGGraph {
         if (0 >= yRange.min && 0 <= yRange.max) this.drawLine(margin.left, scaleY(0), margin.left + chartW, scaleY(0), '#64748b', 1.4, "", 0.75);
         if (0 >= xRange.min && 0 <= xRange.max) this.drawLine(scaleX(0), margin.top, scaleX(0), margin.top + chartH, axisColor, 1.5);
 
-        // Área sombreada (especial para aceleración y velocidad)
+        // ÃƒÂrea sombreada (especial para aceleraciÃƒÂ³n y velocidad)
         if (options.baselineY !== undefined) {
             if (options.chartType === 'acceleration') {
                 const y0 = scaleY(options.baselineY);
@@ -354,14 +354,14 @@ class SVGGraph {
                 const xEnd = scaleX(options.progressT || xRange.max);
                 this.drawRect(x0, Math.min(y0, ya), xEnd - x0, Math.abs(y0 - ya), lineColor, 0.12);
             } else if (options.chartType === 'velocity' && options.progressive) {
-                // Área sutil bajo la curva de velocidad
+                // ÃƒÂrea sutil bajo la curva de velocidad
                 this.drawAreaUnderPath(this.getPastPoints(dataPoints, options.progressT), scaleX, scaleY, options.baselineY, lineColor, 0.08);
             }
         }
 
         // Dibujar Datos
         if (Array.isArray(dataPoints[0])) {
-            // Múltiples series (Encuentro)
+            // MÃƒÂºltiples series (Encuentro)
             const colors = [this.options.lineColor, '#fb7185'];
             dataPoints.forEach((series, i) => {
                 const color = colors[i] || lineColor;
@@ -393,7 +393,7 @@ class SVGGraph {
             const x = scaleX(m.t);
             const y = scaleY(m.val);
             
-            // Línea vertical elegante
+            // LÃƒÂ­nea vertical elegante
             this.drawLine(x, margin.top, x, margin.top + chartH, '#fbbf24', 1, "5,5", 0.65);
             
             // Halo pulsante (opacidad variable en CSS)
@@ -408,7 +408,7 @@ class SVGGraph {
             }
         });
 
-        // Badge informativo para aceleración
+        // Badge informativo para aceleraciÃƒÂ³n
         if (options.chartType === 'acceleration' && markers[0]) {
             const a = markers[0].val;
             let text = a > 0 ? "a > 0: Aumenta v" : (a < 0 ? "a < 0: Frena v" : "a = 0: MRU");
@@ -582,9 +582,9 @@ class SVGGraph {
     }
 }
 
-// Instancias de gráficos
+// Instancias de grÃƒÂ¡ficos
 const charts = {
-    mruaA: new SVGGraph('graph-a', { yLabel: 'a (m/s²)', lineColor: '#38bdf8' }),
+    mruaA: new SVGGraph('graph-a', { yLabel: 'a (m/sÃ‚Â²)', lineColor: '#38bdf8' }),
     mruaV: new SVGGraph('graph-v', { yLabel: 'v (m/s)', lineColor: '#fb7185' }),
     mruaX: new SVGGraph('graph-x', { yLabel: 'x (m)', lineColor: '#4ade80' }),
     encuentro: new SVGGraph('graph-encuentro', { yLabel: 'x (m)', lineColor: '#4ade80' }),
@@ -607,7 +607,7 @@ function updateMRUA() {
     document.getElementById('res-mrua-vf').textContent = v(tEval).toFixed(2);
     document.getElementById('res-mrua-xf').textContent = x(tEval).toFixed(2);
 
-    // Eventos Críticos
+    // Eventos CrÃƒÂ­ticos
     const eventsList = document.getElementById('mrua-events-list');
     eventsList.innerHTML = '';
 
@@ -640,17 +640,17 @@ function updateMRUA() {
         eventsList.appendChild(li);
     }
 
-    // Interpretación
+    // InterpretaciÃƒÂ³n
     let interp = "";
     if (Math.abs(a) < EPS) {
-        interp = "El movimiento es rectilíneo uniforme (MRU): la velocidad permanece constante.";
+        interp = "El movimiento es rectilÃƒÂ­neo uniforme (MRU): la velocidad permanece constante.";
     } else {
         if (a > 0) interp = vi >= 0 ? "Aumenta su velocidad en sentido positivo." : "Se frena inicialmente hacia el origen, luego invierte el sentido.";
         else interp = vi <= 0 ? "Aumenta su velocidad en sentido negativo." : "Se frena inicialmente, pudiendo invertir su marcha.";
     }
     document.getElementById('mrua-interpretation').textContent = interp;
 
-    // Generar datos para gráficos y tabla
+    // Generar datos para grÃƒÂ¡ficos y tabla
     const pointsA = [], pointsV = [], pointsX = [];
     const tableBody = document.querySelector('#mrua-table tbody');
     tableBody.innerHTML = '';
@@ -674,11 +674,11 @@ function updateMRUA() {
         }
     }
 
-    // Renderizar Gráficos con lógica mejorada
+    // Renderizar GrÃƒÂ¡ficos con lÃƒÂ³gica mejorada
     const xRange = { min: 0, max: tMax };
     
     charts.mruaA.render(pointsA, xRange, getAccelerationYRange(a), [
-        { t: tEval, val: a, color: '#38bdf8', label: `a = ${a.toFixed(2)} m/s²` }
+        { t: tEval, val: a, color: '#38bdf8', label: `a = ${a.toFixed(2)} m/sÃ‚Â²` }
     ], {
         progressive: true,
         progressT: tEval,
@@ -732,7 +732,7 @@ function updateEncuentro() {
     let note = "";
 
     if (Math.abs(A) < EPS && Math.abs(B) < EPS) {
-        note = Math.abs(C) < EPS ? "Coinciden en todo momento." : "No hay encuentro (separación constante).";
+        note = Math.abs(C) < EPS ? "Coinciden en todo momento." : "No hay encuentro (separaciÃƒÂ³n constante).";
     } else {
         encuentros = solveQuadratic(A, B, C);
         if (encuentros.length === 0) note = "No se detectan encuentros reales.";
@@ -744,15 +744,15 @@ function updateEncuentro() {
         const div = document.createElement('div');
         div.className = 'enc-item';
         const pos = xA(t);
-        const inside = (t <= s.tMax) ? "✓" : "out";
+        const inside = (t <= s.tMax) ? "Ã¢Å“â€œ" : "out";
         div.textContent = `T${i+1}: ${t.toFixed(2)}s | X: ${pos.toFixed(2)}m [${inside}]`;
         encList.appendChild(div);
     });
     if (note) encList.innerHTML = `<div class="enc-item" style="color: var(--text-muted)">${note}</div>`;
 
-    document.getElementById('encuentro-interpretation').textContent = note || "Se detectaron puntos de intersección en las trayectorias.";
+    document.getElementById('encuentro-interpretation').textContent = note || "Se detectaron puntos de intersecciÃƒÂ³n en las trayectorias.";
 
-    // Cálculos para el tiempo actual
+    // CÃƒÂ¡lculos para el tiempo actual
     const curXA = xA(s.tEval);
     const curXB = xB(s.tEval);
     const curVA = vA(s.tEval);
@@ -768,7 +768,7 @@ function updateEncuentro() {
     const badge = document.getElementById('encounter-badge');
     const trackContainer = document.getElementById('track-container');
 
-    // Gráficos y Tabla
+    // GrÃƒÂ¡ficos y Tabla
     const pointsA = [], pointsB = [], pointsVA = [], pointsVB = [];
     const tableBody = document.querySelector('#encuentro-table tbody');
     tableBody.innerHTML = '';
@@ -857,7 +857,7 @@ function updateEncuentro() {
             ? `xB(${tLabel}s)= ${curXB.toFixed(1)}m < ${trackMin.toFixed(0)}m`
             : `xB(${tLabel}s)= ${curXB.toFixed(1)}m > ${trackMax.toFixed(0)}m`;
 
-    // Línea de separación
+    // LÃƒÂ­nea de separaciÃƒÂ³n
     const left = Math.min(posA.visiblePct, posB.visiblePct);
     const width = Math.abs(posA.visiblePct - posB.visiblePct);
     sepLine.style.left = `${left}%`;
@@ -912,10 +912,10 @@ function updateEncuentro() {
     document.getElementById('track-vb').textContent = curVB.toFixed(2);
     document.getElementById('track-delta').textContent = deltaX.toFixed(2);
 
-    // Renderizar Gráficos
+    // Renderizar GrÃƒÂ¡ficos
     const xRange = { min: 0, max: s.tMax };
     
-    // Gráfico de Posición
+    // GrÃƒÂ¡fico de PosiciÃƒÂ³n
     const yRangeX = getPositionYRange([...pointsA, ...pointsB]);
     charts.encuentro.render([pointsA, pointsB], xRange, yRangeX, [
         { t: s.tEval, val: curXA, color: '#4ade80', label: `xA = ${curXA.toFixed(2)} m` },
@@ -927,7 +927,7 @@ function updateEncuentro() {
         chartType: 'position'
     });
 
-    // Gráfico de Velocidad
+    // GrÃƒÂ¡fico de Velocidad
     const yRangeV = getVelocityYRange([...pointsVA, ...pointsVB]);
     charts.encuentroV.render([pointsVA, pointsVB], xRange, yRangeV, [
         { t: s.tEval, val: curVA, color: '#4ade80', label: `vA = ${curVA.toFixed(2)} m/s` },
@@ -944,7 +944,7 @@ function updateEncuentro() {
 }
 
 // =============================================================================
-// 7. ANIMACIÓN Y CONTROLES
+// 7. ANIMACIÃƒâ€œN Y CONTROLES
 // =============================================================================
 
 function handleAnimation(type) {
@@ -970,8 +970,8 @@ function handleAnimation(type) {
         const elapsed = (timestamp - lastTimestamp) / 1000;
         lastTimestamp = timestamp;
 
-        // Ajustar velocidades para que sean más útiles
-        // Lento: 0.5, Normal: 1.5, Rápido: 4.0
+        // Ajustar velocidades para que sean mÃƒÂ¡s ÃƒÂºtiles
+        // Lento: 0.5, Normal: 1.5, RÃƒÂ¡pido: 4.0
         let playbackRate = sim.speed;
         if (sim.speed === 1) playbackRate = 1.5;
         if (sim.speed === 2) playbackRate = 4.0;
@@ -997,7 +997,7 @@ function handleAnimation(type) {
         if (sim.isPlaying) return;
         if (sim.tEval >= sim.tMax) sim.tEval = 0;
         sim.isPlaying = true;
-        lastTimestamp = null; // Reset timestamp para nueva sesión
+        lastTimestamp = null; // Reset timestamp para nueva sesiÃƒÂ³n
         sim.animationId = requestAnimationFrame(animate);
     };
 
@@ -1065,7 +1065,7 @@ function resetSim(type) {
 }
 
 // =============================================================================
-// 8. EXPORTACIÓN CSV
+// 8. EXPORTACIÃƒâ€œN CSV
 // =============================================================================
 
 function exportTable(type) {
@@ -1089,7 +1089,7 @@ function exportTable(type) {
 }
 
 // =============================================================================
-// 9. INICIALIZACIÓN
+// 9. INICIALIZACIÃƒâ€œN
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1132,7 +1132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
-    // Primera ejecución
+    // Primera ejecuciÃƒÂ³n
     updateMRUA();
     updateEncuentro();
 });
@@ -1143,7 +1143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**
  * CLASE: VerticalSimulator
- * Maneja Caída Libre y Tiro Vertical
+ * Maneja CaÃƒÂ­da Libre y Tiro Vertical
  */
 class VerticalSimulator {
     constructor() {
@@ -1255,9 +1255,19 @@ class VerticalSimulator {
 
     simulate() {
         this.stopAnimation();
+        this.animT = 0;
         this.calculatePhysics();
         this.updateUI();
-        this.draw();
+
+        const initialPoint = this.trajectory.length > 0
+            ? this.trajectory[0]
+            : null;
+
+        this.currentTDisplay.textContent = 't: 0.00s';
+        this.animStatus.textContent = 'SimulaciÃ³n calculada';
+        this.animStatus.style.color = 'var(--accent-green)';
+
+        this.draw(initialPoint);
     }
 
     calculatePhysics() {
@@ -1416,11 +1426,24 @@ class VerticalSimulator {
 
     drawMarkers(ctx, worldToScreen, padding, tMax, yMax) {
         const r = this.results;
+
         if (r.tYmax > 0 && r.tYmax < r.tTotal) {
-            ctx.setLineDash([5, 5]); ctx.strokeStyle = 'rgba(251, 191, 36, 0.3)'; ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = 'rgba(251, 191, 36, 0.3)';
+            ctx.lineWidth = 1;
+
             const py = worldToScreen(r.tYmax, r.yMax);
-            ctx.beginPath(); ctx.moveTo(padding, py.y); ctx.lineTo(py.x, py.y); ctx.lineTo(py.x, h - padding); ctx.stroke();
-            ctx.setLineDash([]); ctx.font = 'bold 14px Outfit'; ctx.fillStyle = '#fbbf24';
+            const ground = worldToScreen(r.tYmax, 0);
+
+            ctx.beginPath();
+            ctx.moveTo(padding, py.y);
+            ctx.lineTo(py.x, py.y);
+            ctx.lineTo(py.x, ground.y);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+            ctx.font = 'bold 14px Inter, sans-serif';
+            ctx.fillStyle = '#fbbf24';
             ctx.fillText(`Ymax: ${r.yMax.toFixed(1)}m`, py.x + 5, py.y - 5);
         }
     }
@@ -1595,7 +1618,7 @@ class ProjectileSimulator {
     }
 
     setPreset(config) {
-        // Obsoleto - Usar VerticalSimulator para caída libre
+        // Obsoleto - Usar VerticalSimulator para caÃƒÂ­da libre
     }
 
     initCanvas() {
@@ -1781,16 +1804,10 @@ class ProjectileSimulator {
             });
         });
 
-        // Robust windowing for vertical cases
-        if (Math.abs(maxX - minX) < 1e-6) {
-            const padX = Math.max(10, Math.abs(minX) * 0.2);
-            minX -= padX;
-            maxX += padX;
-        } else {
-            const padX = (maxX - minX) * 0.1;
-            minX -= padX;
-            maxX += padX;
-        }
+        // Force horizontal scale to start at 0
+        minX = 0;
+        const rangeX = Math.max(maxX - minX, 1);
+        maxX = maxX + rangeX * 0.08;
 
         if (Math.abs(maxY - minY) < 1e-6) {
             maxY = 10;
@@ -1927,7 +1944,7 @@ class ProjectileSimulator {
         this.startTime = performance.now();
         this.btns.animate.classList.add('hidden');
         this.btns.pause.classList.remove('hidden');
-        this.btns.pause.textContent = '⏸ Pausar';
+        this.btns.pause.textContent = 'Ã¢ÂÂ¸ Pausar';
         this.animStatus.textContent = 'Animando...';
         this.animStatus.style.color = 'var(--accent-amber)';
         
@@ -1955,12 +1972,12 @@ class ProjectileSimulator {
         if (this.isAnimating) {
             this.isAnimating = false;
             cancelAnimationFrame(this.animationId);
-            this.btns.pause.textContent = '▶ Continuar';
+            this.btns.pause.textContent = 'Ã¢â€“Â¶ Continuar';
             this.animStatus.textContent = 'Pausado';
         } else {
             this.isAnimating = true;
             this.startTime = performance.now() - this.animT * 1000;
-            this.btns.pause.textContent = '⏸ Pausar';
+            this.btns.pause.textContent = 'Ã¢ÂÂ¸ Pausar';
             this.animStatus.textContent = 'Animando...';
             this.animationId = requestAnimationFrame((t) => this.startAnimationFrom(t));
         }

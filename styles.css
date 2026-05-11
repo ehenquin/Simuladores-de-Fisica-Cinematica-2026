@@ -1,4 +1,4 @@
-/* SIMULADORES DE FÍSICA 2026 - Styles */
+/* SIMULADORES DE FÃSICA 2026 - Styles */
 
 :root {
     /* Color Palette - Deep Dark & Educational Accents */
@@ -189,21 +189,43 @@ body {
 .status-available { background: rgba(74, 222, 128, 0.1); color: var(--accent-green); }
 .status-soon { background: rgba(148, 163, 184, 0.1); color: var(--text-muted); }
 
-.card-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: var(--bg-main);
+.card-icon.physics-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
 }
 
-.mrua-icon::before { content: '📏'; }
-.encuentro-icon::before { content: '⚔️'; }
-.tiro-icon::before { content: '☄️'; }
-.caida-icon::before { content: '🍎'; }
+.card-icon.physics-icon span {
+    display: block;
+    line-height: 1;
+}
+
+.mrua-icon {
+    color: var(--accent-blue) !important;
+}
+
+.encuentro-icon {
+    color: var(--accent-green) !important;
+}
+
+.tiro-icon {
+    color: var(--accent-amber) !important;
+    font-size: 1.35rem !important;
+}
+
+.caida-icon {
+    color: var(--accent-red) !important;
+}
 
 .card-action {
     margin-top: auto;
@@ -860,7 +882,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
 
 /* =============================================================================
-   COMPACTACIÓN VERTICAL CAÍDA LIBRE
+   COMPACTACIÃ“N VERTICAL CAÃDA LIBRE
    ============================================================================= */
 
 #caida-libre .controls-panel {
@@ -931,7 +953,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
 }
 
 /* =============================================================================
-   COMPACTACIÓN VERTICAL TIRO OBLICUO
+   COMPACTACIÃ“N VERTICAL TIRO OBLICUO
    ============================================================================= */
 
 #tiro-oblicuo .projectile-controls {
@@ -1006,7 +1028,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
 }
 
 /* =============================================================================
-   COMPACTACI�N VERTICAL MRU - MRUA
+   COMPACTACIÓN VERTICAL MRU - MRUA
    ============================================================================= */
 
 #mru-mrua .controls-panel {
@@ -1126,4 +1148,271 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
 
 #mru-mrua .visualization-panel {
     gap: 1rem;
+}
+
+
+/* =============================================================================
+   COMPACTACIÓN VERTICAL ENCUENTRO
+   ============================================================================= */
+
+#encuentro .controls-panel {
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    gap: 0.35rem;
+}
+
+#encuentro .tabs-controls {
+    margin-bottom: 0.45rem;
+    gap: 0.35rem;
+}
+
+#encuentro .tab-btn {
+    padding-top: 0.32rem;
+    padding-bottom: 0.32rem;
+    font-size: 0.75rem;
+}
+
+#encuentro .tab-content h3,
+#encuentro .animation-controls h3 {
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+}
+
+#encuentro .control-group {
+    margin-bottom: 0.28rem;
+}
+
+#encuentro .control-group label {
+    margin-bottom: 0.08rem;
+    font-size: 0.82rem;
+    line-height: 1.05;
+}
+
+#encuentro .input-row,
+#encuentro .enhanced-input-row {
+    gap: 0.22rem;
+    align-items: center;
+}
+
+#encuentro .stepper-controls {
+    gap: 0.08rem;
+}
+
+#encuentro .step-btn {
+    height: 15px;
+    min-height: 15px;
+    width: 25px;
+    font-size: 0.6rem;
+    padding: 0;
+}
+
+#encuentro input[type="number"] {
+    height: 28px;
+    padding-top: 0.14rem;
+    padding-bottom: 0.14rem;
+    font-size: 0.88rem;
+}
+
+#encuentro input[type="range"] {
+    height: 4px;
+}
+
+#encuentro .divider {
+    margin: 0.22rem 0;
+}
+
+#encuentro .animation-controls {
+    gap: 0.3rem;
+}
+
+#encuentro .t-eval-row {
+    gap: 0.25rem;
+    margin-bottom: 0.12rem;
+}
+
+#encuentro .t-eval-row input {
+    height: 26px;
+    padding: 0.15rem 0.35rem;
+    font-size: 0.82rem;
+}
+
+#encuentro .teval-slider {
+    margin: 0.08rem 0;
+}
+
+#encuentro .play-btns {
+    gap: 0.25rem;
+}
+
+#encuentro .play-btns button,
+#encuentro .btn-play,
+#encuentro .btn-pause,
+#encuentro .btn-reset-t {
+    min-height: 26px;
+    padding-top: 0.22rem;
+    padding-bottom: 0.22rem;
+    font-size: 0.78rem;
+}
+
+#encuentro .speed-selector {
+    gap: 0.35rem;
+    margin-top: 0.12rem;
+    font-size: 0.8rem;
+}
+
+#encuentro .speed-selector select {
+    height: 26px;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.78rem;
+}
+
+/* Track Scale Controls */
+#encuentro .track-scale-controls {
+    margin-top: 0.55rem;
+    padding: 0.55rem 0.65rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: rgba(15, 23, 42, 0.35);
+}
+
+#encuentro .track-scale-title {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+#encuentro .track-scale-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 80px 18px;
+    gap: 0.35rem;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+#encuentro .track-scale-row:last-child {
+    margin-bottom: 0;
+}
+
+#encuentro .track-scale-row label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+#encuentro .track-scale-row input[type="number"] {
+    height: 26px;
+    padding: 0.12rem 0.3rem;
+    font-size: 0.78rem;
+}
+
+#encuentro .track-scale-row input[type="range"] {
+    height: 4px;
+}
+
+
+/* =============================================================================
+   CORRECCIÓN ESCALA VISUAL ENCUENTRO EN X
+   ============================================================================= */
+
+#encuentro .track-labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+}
+
+#encuentro .track-axis-label {
+    position: absolute;
+    bottom: 6px;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+}
+
+#encuentro .track-axis-min {
+    transform: translateX(-10%);
+}
+
+#encuentro .track-axis-max {
+    transform: translateX(-90%);
+}
+
+#encuentro .track-axis-origin {
+    color: var(--accent-amber);
+    font-weight: 700;
+}
+
+#encuentro .track-origin-tick {
+    position: absolute;
+    top: calc(50% - 13px);
+    height: 26px;
+    width: 2px;
+    background: rgba(251, 191, 36, 0.75);
+    transform: translateX(-50%);
+    border-radius: 999px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+#encuentro .mobile-label {
+    top: 50%;
+    transform: translate(-50%, -185%);
+    z-index: 5;
+    font-size: 0.72rem;
+}
+
+#encuentro .mobile-marker {
+    z-index: 4;
+}
+
+#encuentro .track-separation-line {
+    z-index: 1;
+}
+
+/* =============================================================================
+   REPRESENTACIÓN FUERA DE ESCALA - ENCUENTRO EN X
+   ============================================================================= */
+
+#encuentro .mobile-marker.offscale {
+    outline: 2px dashed var(--accent-amber);
+    box-shadow: 0 0 16px rgba(251, 191, 36, 0.65);
+}
+
+#encuentro .mobile-marker.offscale-left::after {
+    content: '<';
+    position: absolute;
+    right: 120%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-amber);
+    font-weight: 900;
+    font-size: 1rem;
+}
+
+#encuentro .mobile-marker.offscale-right::after {
+    content: '>';
+    position: absolute;
+    left: 120%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-amber);
+    font-weight: 900;
+    font-size: 1rem;
+}
+
+#encuentro .track-separation-line.offscale-separation {
+    background: rgba(251, 191, 36, 0.35);
+    border-top: 2px dashed rgba(251, 191, 36, 0.85);
+    height: 0;
+}
+
+
+#encuentro .track-help-text {
+    margin-top: -0.35rem;
+    margin-bottom: 0.55rem;
+    color: var(--text-muted);
+    font-size: 0.78rem;
 }

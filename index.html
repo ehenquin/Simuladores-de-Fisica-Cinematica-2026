@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMULADORES DE FÍSICA - CINEMÁTICA 2026</title>
+    <meta name="description"
+        content="Reconstrucción moderna de simuladores educativos de cinemática desarrollados originalmente en Excel en 2005 por el Dr. Eduardo R. Henquín.">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="dark-theme">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">FISICA <span class="accent">2026</span></span>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#inicio" class="nav-link active">Inicio</a></li>
+                <li><a href="#mru-mrua" class="nav-link">MRU - MRUA</a></li>
+                <li><a href="#encuentro" class="nav-link">Encuentro en X</a></li>
+                <li><a href="#tiro-oblicuo" class="nav-link">Tiro Oblicuo</a></li>
+                <li><a href="#caida-libre" class="nav-link">Caída Libre</a></li>
+                <li><a href="#acerca" class="nav-link">Acerca de</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="app">
+        <!-- Sección: Inicio -->
+        <section id="inicio" class="app-section">
+            <div class="hero-section">
+                <h1>Simuladores de Física - Cinemática 2026</h1>
+                <p class="subtitle">Reconstrucción moderna de simuladores educativos de cinemática desarrollados
+                    originalmente en Excel.</p>
+                <p class="origin-note">Versión original: Excel, septiembre de 2005.</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card simulator-card" onclick="location.hash='#mru-mrua'">
+                    <div class="card-status status-available">Disponible</div>
+                    <div class="card-icon mrua-icon"></div>
+                    <h3>MRU - MRUA</h3>
+                    <p>Movimiento rectilíneo uniforme y uniformemente acelerado. Explorá aceleración, velocidad,
+                        posición y tiempo.</p>
+                    <span class="card-action">Abrir simulador →</span>
+                </div>
+
+                <div class="card simulator-card" onclick="location.hash='#encuentro'">
+                    <div class="card-status status-available">Disponible</div>
+                    <div class="card-icon encuentro-icon"></div>
+                    <h3>Encuentro en X</h3>
+                    <p>Dos móviles con posiciones variables. Calculá y visualizá cuándo y dónde se encuentran.</p>
+                    <span class="card-action">Abrir simulador →</span>
+                </div>
+
+                <div class="card simulator-card" onclick="location.hash='#tiro-oblicuo'">
+                    <div class="card-status status-available">Disponible</div>
+                    <div class="card-icon tiro-icon"></div>
+                    <h3>Tiro Oblicuo</h3>
+                    <p>Trayectoria parabólica de proyectiles bajo la influencia de la gravedad.</p>
+                    <span class="card-action">Abrir simulador →</span>
+                </div>
+
+                <div class="card simulator-card" onclick="location.hash='#caida-libre'">
+                    <div class="card-status status-available">Disponible</div>
+                    <div class="card-icon caida-icon"></div>
+                    <h3>Caída Libre</h3>
+                    <p>Movimiento vertical bajo aceleración gravitatoria constante.</p>
+                    <span class="card-action">Abrir simulador →</span>
+                </div>
+            </div>
+
+            <div class="info-banner">
+                <p>“Esta app permite modificar parámetros físicos y observar en tiempo real cómo cambian las ecuaciones,
+                    los gráficos y los resultados. Está pensada para aprender explorando.”</p>
+            </div>
+        </section>
+
+        <!-- Sección: MRU - MRUA -->
+        <section id="mru-mrua" class="app-section hidden">
+            <!-- Se llenará dinámicamente o estructurado aquí -->
+            <div class="section-header">
+                <h2>Simulador MRU - MRUA</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="resetSim('mrua')">Reiniciar valores</button>
+                    <button class="btn btn-primary" onclick="exportTable('mrua')">Exportar CSV</button>
+                </div>
+            </div>
+
+            <div class="simulator-layout">
+                <!-- Controles Izquierda -->
+                <aside class="controls-panel card">
+                    <h3>Variables</h3>
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="mrua-a">Aceleración (a)</label>
+                            <span class="unit">m/s²</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="mrua-a">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="mrua-a">▼</button>
+                            </div>
+                            <input type="range" id="mrua-a-slider" min="-20" max="20" step="0.1" value="10">
+                            <input type="number" id="mrua-a-num" value="10" step="0.1">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="mrua-vi">Velocidad Inicial (vᵢ)</label>
+                            <span class="unit">m/s</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="mrua-vi">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="mrua-vi">▼</button>
+                            </div>
+                            <input type="range" id="mrua-vi-slider" min="-100" max="100" step="1" value="-30">
+                            <input type="number" id="mrua-vi-num" value="-30" step="1">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="mrua-xi">Posición Inicial (xᵢ)</label>
+                            <span class="unit">m</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="mrua-xi">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="mrua-xi">▼</button>
+                            </div>
+                            <input type="range" id="mrua-xi-slider" min="-500" max="500" step="1" value="0">
+                            <input type="number" id="mrua-xi-num" value="0" step="1">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="mrua-tmax">Tiempo Máximo</label>
+                            <span class="unit">s</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="mrua-tmax">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="mrua-tmax">▼</button>
+                            </div>
+                            <input type="range" id="mrua-tmax-slider" min="1" max="60" step="1" value="10">
+                            <input type="number" id="mrua-tmax-num" value="10" step="1">
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="animation-controls">
+                        <h3>Simulación</h3>
+                        <div class="t-eval-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="mrua-teval">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="mrua-teval">▼</button>
+                            </div>
+                            <label for="mrua-teval">t eval:</label>
+                            <input type="number" id="mrua-teval-num" value="3" step="0.1" min="0">
+                            <span class="unit">s</span>
+                        </div>
+                        <input type="range" id="mrua-teval-slider" min="0" max="10" step="0.1" value="3"
+                            class="teval-slider">
+
+                        <div class="play-btns">
+                            <button id="mrua-play" class="btn-play">▶ Play</button>
+                            <button id="mrua-pause" class="btn-pause">⏸ Pausa</button>
+                            <button id="mrua-reset-t" class="btn-reset-t">↺ Reiniciar</button>
+                        </div>
+
+                        <div class="speed-selector">
+                            <label>Velocidad:</label>
+                            <select id="mrua-speed">
+                                <option value="0.5">Lento</option>
+                                <option value="1" selected>Normal</option>
+                                <option value="2">Rápido</option>
+                            </select>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Área Central/Derecha: Gráficos y Resultados -->
+                <div class="visualization-panel">
+                    <div class="graphs-container">
+                        <div class="graph-box card">
+                            <h4>Aceleración vs Tiempo</h4>
+                            <div class="svg-wrapper" id="graph-a"></div>
+                        </div>
+                        <div class="graph-box card">
+                            <h4>Velocidad vs Tiempo</h4>
+                            <div class="svg-wrapper" id="graph-v"></div>
+                        </div>
+                        <div class="graph-box card">
+                            <h4>Posición vs Tiempo</h4>
+                            <div class="svg-wrapper" id="graph-x"></div>
+                        </div>
+                    </div>
+
+                    <div class="equations-card card">
+                        <div class="math-formula">v(t) = vᵢ + a · t</div>
+                        <div class="math-formula">x(t) = xᵢ + vᵢ · t + ½ · a · t²</div>
+                    </div>
+
+                    <div class="results-grid">
+                        <div class="result-item card">
+                            <span class="res-label">Aceleración</span>
+                            <span class="res-value" id="res-mrua-a">10.00</span>
+                            <span class="res-unit">m/s²</span>
+                        </div>
+                        <div class="result-item card">
+                            <span class="res-label">Velocidad final (v_f)</span>
+                            <span class="res-value" id="res-mrua-vf">0.00</span>
+                            <span class="res-unit">m/s</span>
+                        </div>
+                        <div class="result-item card">
+                            <span class="res-label">Posición final (x_f)</span>
+                            <span class="res-value" id="res-mrua-xf">0.00</span>
+                            <span class="res-unit">m</span>
+                        </div>
+                    </div>
+
+                    <div class="events-card card">
+                        <h3>Eventos Críticos</h3>
+                        <ul id="mrua-events-list">
+                            <!-- Injected by JS -->
+                        </ul>
+                    </div>
+
+                    <div class="interpretation-card card">
+                        <h3>Lectura Física</h3>
+                        <p id="mrua-interpretation">Cargando interpretación...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container card">
+                <h3>Tabla de Valores</h3>
+                <div class="table-scroll">
+                    <table id="mrua-table">
+                        <thead>
+                            <tr>
+                                <th>t (s)</th>
+                                <th>a (m/s²)</th>
+                                <th>v (m/s)</th>
+                                <th>x (m)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección: Encuentro en X -->
+        <section id="encuentro" class="app-section hidden">
+            <div class="section-header">
+                <h2>Simulador Encuentro en X</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="resetSim('encuentro')">Reiniciar valores</button>
+                    <button class="btn btn-primary" onclick="exportTable('encuentro')">Exportar CSV</button>
+                </div>
+            </div>
+
+            <div class="simulator-layout">
+                <aside class="controls-panel card">
+                    <div class="tabs-controls">
+                        <button class="tab-btn active" data-tab="mobileA">Móvil A (Verde)</button>
+                        <button class="tab-btn" data-tab="mobileB">Móvil B (Rojo)</button>
+                    </div>
+
+                    <div id="tab-mobileA" class="tab-content">
+                        <h3>Móvil A</h3>
+                        <div class="control-group">
+                            <label>Aceleración (a_A)</label>
+                            <div class="input-row enhanced-input-row">
+                                <div class="stepper-controls">
+                                    <button type="button" class="step-btn step-up" data-target="enc-aa">▲</button>
+                                    <button type="button" class="step-btn step-down" data-target="enc-aa">▼</button>
+                                </div>
+                                <input type="range" id="enc-aa-slider" min="-20" max="20" step="0.1" value="-10">
+                                <input type="number" id="enc-aa-num" value="-10" step="0.1">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label>Vel. Inicial (v_iA)</label>
+                            <div class="input-row enhanced-input-row">
+                                <div class="stepper-controls">
+                                    <button type="button" class="step-btn step-up" data-target="enc-via">▲</button>
+                                    <button type="button" class="step-btn step-down" data-target="enc-via">▼</button>
+                                </div>
+                                <input type="range" id="enc-via-slider" min="-200" max="200" step="1" value="100">
+                                <input type="number" id="enc-via-num" value="100" step="1">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label>Pos. Inicial (x_iA)</label>
+                            <div class="input-row enhanced-input-row">
+                                <div class="stepper-controls">
+                                    <button type="button" class="step-btn step-up" data-target="enc-xia">▲</button>
+                                    <button type="button" class="step-btn step-down" data-target="enc-xia">▼</button>
+                                </div>
+                                <input type="range" id="enc-xia-slider" min="-3000" max="3000" step="10" value="2000">
+                                <input type="number" id="enc-xia-num" value="2000" step="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-mobileB" class="tab-content hidden">
+                        <h3>Móvil B</h3>
+                        <div class="control-group">
+                            <label>Aceleración (a_B)</label>
+                            <div class="input-row enhanced-input-row">
+                                <div class="stepper-controls">
+                                    <button type="button" class="step-btn step-up" data-target="enc-ab">▲</button>
+                                    <button type="button" class="step-btn step-down" data-target="enc-ab">▼</button>
+                                </div>
+                                <input type="range" id="enc-ab-slider" min="-20" max="20" step="0.1" value="10">
+                                <input type="number" id="enc-ab-num" value="10" step="0.1">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label>Vel. Inicial (v_iB)</label>
+                            <div class="input-row enhanced-input-row">
+                                <div class="stepper-controls">
+                                    <button type="button" class="step-btn step-up" data-target="enc-vib">▲</button>
+                                    <button type="button" class="step-btn step-down" data-target="enc-vib">▼</button>
+                                </div>
+                                <input type="range" id="enc-vib-slider" min="-200" max="200" step="1" value="0">
+                                <input type="number" id="enc-vib-num" value="0" step="1">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label>Pos. Inicial (x_iB)</label>
+                            <div class="input-row enhanced-input-row">
+                                <div class="stepper-controls">
+                                    <button type="button" class="step-btn step-up" data-target="enc-xib">▲</button>
+                                    <button type="button" class="step-btn step-down" data-target="enc-xib">▼</button>
+                                </div>
+                                <input type="range" id="enc-xib-slider" min="-3000" max="3000" step="10" value="0">
+                                <input type="number" id="enc-xib-num" value="0" step="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="animation-controls">
+                        <h3>Simulación Global</h3>
+                        <div class="control-group">
+                            <label>t Máximo</label>
+                            <div class="input-row enhanced-input-row">
+                                <div class="stepper-controls">
+                                    <button type="button" class="step-btn step-up" data-target="enc-tmax">▲</button>
+                                    <button type="button" class="step-btn step-down" data-target="enc-tmax">▼</button>
+                                </div>
+                                <input type="range" id="enc-tmax-slider" min="1" max="100" step="1" value="50">
+                                <input type="number" id="enc-tmax-num" value="50" step="1">
+                            </div>
+                        </div>
+                        <div class="t-eval-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="enc-teval">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="enc-teval">▼</button>
+                            </div>
+                            <label>t eval:</label>
+                            <input type="number" id="enc-teval-num" value="20" step="0.1" min="0">
+                        </div>
+                        <input type="range" id="enc-teval-slider" min="0" max="50" step="0.1" value="20"
+                            class="teval-slider">
+
+                        <div class="play-btns">
+                            <button id="enc-play" class="btn-play">▶ Play</button>
+                            <button id="enc-pause" class="btn-pause">⏸ Pausa</button>
+                            <button id="enc-reset-t" class="btn-reset-t">↺ Reiniciar</button>
+                        </div>
+
+                        <div class="speed-selector">
+                            <label>Velocidad:</label>
+                            <select id="enc-speed">
+                                <option value="0.5">Lento</option>
+                                <option value="1" selected>Normal</option>
+                                <option value="2">Rápido</option>
+                            </select>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="visualization-panel">
+                    <!-- Representación visual de la pista -->
+                    <div class="track-card card">
+                        <h3>Representación en Pista</h3>
+                        <div id="track-container" class="track-viz">
+                            <div class="track-line"></div>
+                            <div id="track-separation-line" class="track-separation-line"></div>
+                            <div id="mobile-a-label" class="mobile-label mobile-label-a">xA=0m</div>
+                            <div id="mobile-b-label" class="mobile-label mobile-label-b">xB=0m</div>
+                            <div id="mobile-a-marker" class="mobile-marker marker-a" title="Móvil A">A</div>
+                            <div id="mobile-b-marker" class="mobile-marker marker-b" title="Móvil B">B</div>
+                            <div class="track-labels">
+                                <span id="track-min">-3000m</span>
+                                <span id="track-center">0m</span>
+                                <span id="track-max">3000m</span>
+                            </div>
+                        </div>
+                        <div class="track-stats-grid">
+                            <span class="track-stat-item">xA: <strong id="track-xa">0.00</strong> <span
+                                    class="track-unit">m</span></span>
+                            <span class="track-stat-item">xB: <strong id="track-xb">0.00</strong> <span
+                                    class="track-unit">m</span></span>
+                            <span class="track-stat-item">vA: <strong id="track-va">0.00</strong> <span
+                                    class="track-unit">m/s</span></span>
+                            <span class="track-stat-item">vB: <strong id="track-vb">0.00</strong> <span
+                                    class="track-unit">m/s</span></span>
+                            <span class="track-stat-item highlight">Separación Δx: <strong
+                                    id="track-delta">0.00</strong> <span class="track-unit">m</span></span>
+                        </div>
+                        <div id="encounter-badge" class="encounter-badge hidden">¡Encuentro detectado!</div>
+                    </div>
+
+                    <div class="results-grid">
+                        <div class="result-item card">
+                            <span class="res-label">Encuentros Detectados</span>
+                            <div id="encuentros-list" class="enc-list">
+                                <!-- JS Injected -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="graph-box card">
+                        <h4>Posición vs Tiempo (A y B)</h4>
+                        <div class="svg-wrapper" id="graph-encuentro"></div>
+                    </div>
+
+                    <div class="graph-box card">
+                        <h4>Velocidad vs Tiempo (A y B)</h4>
+                        <div class="svg-wrapper" id="graph-encuentro-v"></div>
+                    </div>
+
+                    <div class="interpretation-card card">
+                        <h3>Análisis de Encuentro</h3>
+                        <p id="encuentro-interpretation">Calculando resultados...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container card">
+                <h3>Comparativa de Móviles</h3>
+                <div class="table-scroll">
+                    <table id="encuentro-table">
+                        <thead>
+                            <tr>
+                                <th>t (s)</th>
+                                <th>x_A (m)</th>
+                                <th>x_B (m)</th>
+                                <th>v_A (m/s)</th>
+                                <th>v_B (m/s)</th>
+                                <th>Δx (m)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: TIRO OBLICUO (NUEVO) -->
+        <section id="tiro-oblicuo" class="app-section hidden">
+            <div class="section-header">
+                <div class="projectile-header-content">
+                    <h2>Simulador de Tiro Oblicuo</h2>
+                    <p>Movimiento parabólico de proyectiles con gravedad configurable.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="projectile-reset">Reiniciar valores</button>
+                    <button class="btn btn-primary" id="projectile-export">Exportar CSV</button>
+                </div>
+            </div>
+
+            <div class="projectile-layout">
+                <!-- Panel de Controles -->
+                <aside class="controls-panel card projectile-controls">
+                    <h3>Parámetros Iniciales</h3>
+
+                    <!-- Ángulo -->
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="projectile-angle">Ángulo inicial (&alpha;)</label>
+                            <span class="unit">°</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="projectile-angle">▲</button>
+                                <button type="button" class="step-btn step-down"
+                                    data-target="projectile-angle">▼</button>
+                            </div>
+                            <input type="range" id="projectile-angle-slider" min="0" max="90" value="30" step="1">
+                            <input type="number" id="projectile-angle-num" value="30" step="1">
+                        </div>
+                    </div>
+
+                    <!-- Vi -->
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="projectile-vi">Velocidad inicial (vᵢ)</label>
+                            <span class="unit">m/s</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="projectile-vi">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="projectile-vi">▼</button>
+                            </div>
+                            <input type="range" id="projectile-vi-slider" min="0" max="100" value="20" step="1">
+                            <input type="number" id="projectile-vi-num" value="20" step="1">
+                        </div>
+                    </div>
+
+                    <!-- Xi -->
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="projectile-xi">Posición inicial (xᵢ)</label>
+                            <span class="unit">m</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="projectile-xi">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="projectile-xi">▼</button>
+                            </div>
+                            <input type="range" id="projectile-xi-slider" min="0" max="100" value="0" step="1">
+                            <input type="number" id="projectile-xi-num" value="0" step="1">
+                        </div>
+                    </div>
+
+                    <!-- Yi -->
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="projectile-yi">Altura inicial (yᵢ)</label>
+                            <span class="unit">m</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="projectile-yi">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="projectile-yi">▼</button>
+                            </div>
+                            <input type="range" id="projectile-yi-slider" min="0" max="100" value="10" step="1">
+                            <input type="number" id="projectile-yi-num" value="10" step="1">
+                        </div>
+                    </div>
+
+                    <!-- Gravedad -->
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label>Gravedad (g)</label>
+                            <span class="unit">m/s²</span>
+                        </div>
+                        <select id="projectile-gravity-select" class="speed-selector">
+                            <option value="9.81">Tierra (9.81)</option>
+                            <option value="1.62">Luna (1.62)</option>
+                            <option value="3.71">Marte (3.71)</option>
+                            <option value="custom">Personalizada</option>
+                        </select>
+                        <div id="projectile-gravity-custom-container" class="hidden">
+                            <input type="number" id="projectile-gravity-num" value="9.81" step="0.01" min="0.1"
+                                class="projectile-gravity-custom-input">
+                        </div>
+                    </div>
+
+                    <!-- Tiempo Máximo -->
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="projectile-tmax">Tiempo máximo (t_max)</label>
+                            <span class="unit">s</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="projectile-tmax">▲</button>
+                                <button type="button" class="step-btn step-down"
+                                    data-target="projectile-tmax">▼</button>
+                            </div>
+                            <input type="range" id="projectile-tmax-slider" min="1" max="30" value="10" step="0.5">
+                            <input type="number" id="projectile-tmax-num" value="10" step="0.5">
+                        </div>
+                    </div>
+
+                    <div class="projectile-actions">
+                        <button id="projectile-btn-simulate" class="btn-play">▶ Simular</button>
+                        <button id="projectile-btn-animate" class="btn-pause"
+                            style="background: var(--accent-secondary);">Animar</button>
+                        <button id="projectile-btn-pause" class="btn-pause hidden">⏸ Pausar</button>
+                        <button id="projectile-btn-save" class="btn-reset-t">Guardar</button>
+                        <button id="projectile-btn-clear" class="btn-secondary">Limpiar</button>
+                    </div>
+                </aside>
+
+                <!-- Panel Principal -->
+                <div class="visualization-panel projectile-main-panel">
+                    <!-- Canvas Card -->
+                    <div class="card projectile-canvas-card">
+                        <div class="canvas-header"
+                            style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+                            <span id="projectile-status" style="color: var(--accent-green);">Listo</span>
+                            <span id="projectile-current-t" style="color: var(--accent-amber);">t: 0.00s</span>
+                        </div>
+                        <div class="projectile-canvas-container" id="projectile-canvas-wrapper">
+                            <canvas id="projectile-canvas"></canvas>
+                            <div class="watermark">Dr. Eduardo R. Henquín · 2005 → 2026</div>
+                        </div>
+                    </div>
+
+                    <!-- Resultados -->
+                    <div class="card projectile-results-card">
+                        <h3>Resultados del Lanzamiento</h3>
+                        <div class="projectile-results-grid">
+                            <div class="projectile-result-item card">
+                                <span class="res-label">V<sub>fx</sub>:</span>
+                                <span class="res-value" id="projectile-res-vfx">0.00</span>
+                                <span class="res-unit">m/s</span>
+                            </div>
+                            <div class="result-item card">
+                                <span class="res-label">V<sub>fy</sub> inicial:</span>
+                                <span class="res-value" id="projectile-res-vfy-init">0.00</span>
+                                <span class="res-unit">m/s</span>
+                            </div>
+                            <div class="projectile-result-item card">
+                                <span class="res-label">t(Y<sub>max</sub>):</span>
+                                <span class="res-value" id="projectile-res-t-ymax">0.00</span>
+                                <span class="res-unit">s</span>
+                            </div>
+                            <div class="projectile-result-item card">
+                                <span class="res-label">Y<sub>max</sub>:</span>
+                                <span class="res-value" id="projectile-res-ymax">0.00</span>
+                                <span class="res-unit">m</span>
+                            </div>
+                            <div class="projectile-result-item card">
+                                <span class="res-label">X(Y<sub>max</sub>):</span>
+                                <span class="res-value" id="projectile-res-x-ymax">0.00</span>
+                                <span class="res-unit">m</span>
+                            </div>
+                            <div class="projectile-result-item card">
+                                <span class="res-label">V<sub>fy</sub> final:</span>
+                                <span class="res-value" id="projectile-res-vfy-final">0.00</span>
+                                <span class="res-unit">m/s</span>
+                            </div>
+                            <div class="projectile-result-item card" id="projectile-res-item-xmax">
+                                <span class="res-label">Alcance X<sub>max</sub>:</span>
+                                <span class="res-value" id="projectile-res-xmax">0.00</span>
+                                <span class="res-unit">m</span>
+                            </div>
+                            <div class="projectile-result-item card">
+                                <span class="res-label">Tiempo Total:</span>
+                                <span class="res-value" id="projectile-res-t-total">0.00</span>
+                                <span class="res-unit">s</span>
+                            </div>
+                            <div class="projectile-result-item card">
+                                <span class="res-label">|V| final:</span>
+                                <span class="res-value" id="projectile-res-vmod">0.00</span>
+                                <span class="res-unit">m/s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info Row -->
+                    <div class="projectile-info-row"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+                        <div class="card">
+                            <h3>Ecuaciones Físicas</h3>
+                            <div class="projectile-equations-grid"
+                                style="display: grid; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary);">
+                                <div>V<sub>fx</sub> = Vᵢ · cos(&alpha;)</div>
+                                <div>V<sub>fy</sub> = Vᵢ · sen(&alpha;) - g · t</div>
+                                <div>X<sub>f</sub> = Xᵢ + Vᵢ · cos(&alpha;) · t</div>
+                                <div>Y<sub>f</sub> = Yᵢ + Vᵢ · sen(&alpha;) · t - ½ · g · t²</div>
+                                <div>t(Y<sub>max</sub>) = Vᵢ · sen(&alpha;) / g</div>
+                                <div>Y<sub>max</sub> = Yᵢ + (Vᵢ · sen(&alpha;))² / (2g)</div>
+                            </div>
+                        </div>
+                        <div class="card projectile-guide-card">
+                            <h3>Guía Didáctica</h3>
+                            <p style="font-size: 0.9rem; margin-bottom: 1rem;">El movimiento oblicuo combina un
+                                movimiento horizontal uniforme con un movimiento vertical acelerado por la gravedad.</p>
+                            <div class="questions">
+                                <h4 style="font-size: 0.9rem; color: var(--accent-primary); margin-bottom: 0.5rem;">
+                                    Explora y analiza:</h4>
+                                <ul
+                                    style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 1rem; list-style-type: disc;">
+                                    <li>¿Qué ocurre con el alcance si aumentás la velocidad inicial?</li>
+                                    <li>¿Qué ángulo permite mayor alcance cuando Yᵢ = 0?</li>
+                                    <li>¿Cómo cambia la trayectoria si el disparo empieza desde mayor altura?</li>
+                                    <li>¿Qué cambia al simular en la Luna o Marte?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla -->
+            <div class="table-container card" style="margin-top: 2rem;">
+                <h3>Tabla de Datos de Trayectoria</h3>
+                <div class="table-scroll">
+                    <table id="projectile-table">
+                        <thead>
+                            <tr>
+                                <th>t (s)</th>
+                                <th>X (m)</th>
+                                <th>Y (m)</th>
+                                <th>Vₓ (m/s)</th>
+                                <th>Vᵧ (m/s)</th>
+                                <th>|V| (m/s)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectile-table-body">
+                            <!-- JS Injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: CAÍDA LIBRE Y TIRO VERTICAL -->
+        <section id="caida-libre" class="app-section hidden">
+            <div class="section-header">
+                <div class="vertical-header-content">
+                    <h2>Simulador de Caída Libre y Tiro Vertical</h2>
+                    <p>Movimiento vertical bajo aceleración gravitatoria constante.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="vertical-reset">Reiniciar valores</button>
+                    <button class="btn btn-primary" id="vertical-export">Exportar CSV</button>
+                </div>
+            </div>
+
+            <div class="projectile-layout">
+                <!-- Panel de Controles -->
+                <aside class="controls-panel card projectile-controls vertical-controls">
+                    <h3>Variables Verticales</h3>
+
+                    <div class="control-group">
+                        <div class="label-row"><label for="vertical-mode">Modo de inicio</label></div>
+                        <select id="vertical-mode" class="speed-selector" style="width: 100%;">
+                            <option value="caida">Caída libre (v₀ = 0)</option>
+                            <option value="tiro">Tiro vertical (v₀ > 0)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="vertical-yi">Altura inicial (yᵢ)</label>
+                            <span class="unit">m</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="vertical-yi">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="vertical-yi">▼</button>
+                            </div>
+                            <input type="range" id="vertical-yi-slider" min="0" max="500" value="50" step="1">
+                            <input type="number" id="vertical-yi-num" value="50" step="1">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="vertical-viy">Velocidad inicial (vᵢᵧ)</label>
+                            <span class="unit">m/s</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="vertical-viy">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="vertical-viy">▼</button>
+                            </div>
+                            <input type="range" id="vertical-viy-slider" min="0" max="200" value="0" step="1">
+                            <input type="number" id="vertical-viy-num" value="0" step="1">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="vertical-gravity-select">Gravedad (g)</label>
+                            <span class="unit">m/s²</span>
+                        </div>
+                        <select id="vertical-gravity-select" class="speed-selector" style="width: 100%;">
+                            <option value="9.81">Tierra (9.81)</option>
+                            <option value="1.62">Luna (1.62)</option>
+                            <option value="3.71">Marte (3.71)</option>
+                            <option value="custom">Personalizada...</option>
+                        </select>
+                        <div id="vertical-gravity-custom-container" class="hidden">
+                            <input type="number" id="vertical-gravity-num" value="9.81" step="0.01"
+                                class="projectile-gravity-custom-input" style="width: 100%;">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="vertical-tmax">Tiempo máximo visual</label>
+                            <span class="unit">s</span>
+                        </div>
+                        <div class="input-row enhanced-input-row">
+                            <div class="stepper-controls">
+                                <button type="button" class="step-btn step-up" data-target="vertical-tmax">▲</button>
+                                <button type="button" class="step-btn step-down" data-target="vertical-tmax">▼</button>
+                            </div>
+                            <input type="range" id="vertical-tmax-slider" min="1" max="100" value="5" step="1">
+                            <input type="number" id="vertical-tmax-num" value="5" step="1">
+                        </div>
+                    </div>
+
+                    <div class="projectile-actions">
+                        <button id="vertical-btn-simulate" class="btn btn-primary">Simular</button>
+                        <button id="vertical-btn-animate" class="btn btn-success">Animar</button>
+                        <button id="vertical-btn-pause" class="btn btn-warning hidden">Pausar</button>
+                        <button id="vertical-btn-save" class="btn btn-secondary">Guardar</button>
+                        <button id="vertical-btn-clear" class="btn btn-secondary">Limpiar</button>
+                    </div>
+                </aside>
+
+                <!-- Área de Visualización -->
+                <main class="projectile-main-panel">
+                    <div class="card projectile-canvas-card">
+                        <div id="vertical-status" class="anim-status-badge">Listo</div>
+                        <div id="vertical-current-t" class="anim-time-display">t: 0.00s</div>
+                        <div id="vertical-canvas-wrapper" class="canvas-container" style="height: 380px;">
+                            <canvas id="vertical-canvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card projectile-results-card">
+                        <h3>Resultados Verticales</h3>
+                        <div class="projectile-results-grid vertical-results-grid">
+                            <div class="projectile-result-item"><span class="res-label">Altura Inicial</span><strong
+                                    class="res-value" id="vertical-res-yi">0.00</strong><span class="res-unit">m</span>
+                            </div>
+                            <div class="projectile-result-item"><span class="res-label">V. Inicial (vᵢᵧ)</span><strong
+                                    class="res-value" id="vertical-res-viy">0.00</strong><span
+                                    class="res-unit">m/s</span></div>
+                            <div class="projectile-result-item"><span class="res-label">Tiempo Total</span><strong
+                                    class="res-value" id="vertical-res-t-total">0.00</strong><span
+                                    class="res-unit">s</span></div>
+                            <div class="projectile-result-item" id="vertical-res-item-ymax"><span
+                                    class="res-label">Altura Máxima</span><strong class="res-value"
+                                    id="vertical-res-ymax">0.00</strong><span class="res-unit">m</span></div>
+                            <div class="projectile-result-item"><span class="res-label">t(Ymax)</span><strong
+                                    class="res-value" id="vertical-res-t-ymax">0.00</strong><span
+                                    class="res-unit">s</span></div>
+                            <div class="projectile-result-item"><span class="res-label">V. Final (vᵧ)</span><strong
+                                    class="res-value" id="vertical-res-vfy">0.00</strong><span
+                                    class="res-unit">m/s</span></div>
+                            <div class="projectile-result-item"><span class="res-label">|V| Final</span><strong
+                                    class="res-value" id="vertical-res-vmod">0.00</strong><span
+                                    class="res-unit">m/s</span></div>
+                            <div class="projectile-result-item"><span class="res-label">Gravedad</span><strong
+                                    class="res-value" id="vertical-res-g">9.81</strong><span
+                                    class="res-unit">m/s²</span></div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Tabla de Datos -->
+            <div class="table-container card" style="margin-top: 2rem;">
+                <h3>Tabla de Datos (y vs t)</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>t (s)</th>
+                                <th>y (m)</th>
+                                <th>vᵧ (m/s)</th>
+                                <th>|v| (m/s)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vertical-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección: Desafíos -->
+        <section id="desafios" class="app-section hidden">
+            <div class="section-header">
+                <h2>Desafíos de Física</h2>
+                <p>Poné a prueba tus conocimientos configurando los simuladores.</p>
+            </div>
+
+            <div class="challenges-grid">
+                <div class="challenge-group">
+                    <h3>Desafíos MRU - MRUA</h3>
+                    <div class="challenge-card card">
+                        <div class="challenge-icon">🎯</div>
+                        <div class="challenge-info">
+                            <h4>Freno Exacto</h4>
+                            <p>Configurá los valores para que el móvil se detenga exactamente a los 3 segundos.</p>
+                        </div>
+                    </div>
+                    <div class="challenge-card card">
+                        <div class="challenge-icon">🎯</div>
+                        <div class="challenge-info">
+                            <h4>Origen de Coordenadas</h4>
+                            <p>Hacé que el móvil pase por x = 0 dentro de los primeros 5 segundos de simulación.</p>
+                        </div>
+                    </div>
+                    <div class="challenge-card card">
+                        <div class="challenge-icon">🎯</div>
+                        <div class="challenge-info">
+                            <h4>Parábola Invertida</h4>
+                            <p>Lográ un caso donde la gráfica de posición sea una parábola abierta hacia abajo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="challenge-group">
+                    <h3>Desafíos Encuentro en X</h3>
+                    <div class="challenge-card card">
+                        <div class="challenge-icon">⚡</div>
+                        <div class="challenge-info">
+                            <h4>Un solo Encuentro</h4>
+                            <p>Configurá dos móviles para que se toquen exactamente en un solo instante.</p>
+                        </div>
+                    </div>
+                    <div class="challenge-card card">
+                        <div class="challenge-icon">⚡</div>
+                        <div class="challenge-info">
+                            <h4>Doble Cruce</h4>
+                            <p>Lográ un escenario donde los móviles se encuentren dos veces en el intervalo de tiempo.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="challenge-card card">
+                        <div class="challenge-icon">⚡</div>
+                        <div class="challenge-info">
+                            <h4>Distancia Constante</h4>
+                            <p>Configurá los parámetros para que los móviles mantengan siempre la misma separación.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección: Acerca de -->
+        <section id="acerca" class="app-section hidden">
+            <div class="about-card card">
+                <div class="about-content">
+                    <h2>Acerca de este proyecto</h2>
+                    <p>Estos simuladores recuperan una idea desarrollada originalmente en Excel en septiembre de 2005
+                        por el <strong>Dr. Eduardo R. Henquín</strong> para acompañar clases de Física.</p>
+                    <p>La <strong>versión 2026</strong> transforma aquella experiencia en una aplicación web
+                        interactiva, adaptable a pantallas modernas y pensada para aprender explorando. Se ha mantenido
+                        la precisión física original mientras se moderniza la interfaz para una mejor visualización de
+                        los fenómenos cinemáticos.</p>
+
+                    <div class="credits-box">
+                        <p><strong>Autor:</strong> Dr. Eduardo R. Henquín</p>
+                        <p><strong>Año original:</strong> 2005 (Versión Excel)</p>
+                        <p><strong>Versión web:</strong> 2026</p>
+                        <p><strong>Contacto y Enlaces:</strong> <a href="https://ehenquin.github.io/LinkTreePro/"
+                                target="_blank" rel="noopener">LinkTreePro</a></p>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <!-- Espacio para una imagen o logo si hiciera falta -->
+                    <div class="logo-placeholder">FISICA 2026</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-info">
+                <p>Diseñado por Dr. Eduardo R. Henquín | Basado en simuladores educativos originales (2005)</p>
+                <p><a href="https://ehenquin.github.io/LinkTreePro/" target="_blank">LinkTree:
+                        ehenquin.github.io/LinkTreePro/</a></p>
+            </div>
+            <div class="footer-tag">Simuladores de Física - Cinemática 2026</div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

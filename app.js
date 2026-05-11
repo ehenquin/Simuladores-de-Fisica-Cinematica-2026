@@ -28,7 +28,9 @@ const state = {
         aA: -10, viA: 100, xiA: 2000,
         aB: 10, viB: 0, xiB: 0,
         tMax: 50,
-        tEval: 20,
+        tEval: 0,
+        trackMin: -4000,
+        trackMax: 4000,
         isPlaying: false,
         speed: 1,
         animationId: null
@@ -792,29 +794,81 @@ function updateEncuentro() {
         }
     }
 
-    // Actualizar Pista con escala dinámica
-    const trackRange = getTrackRange(pointsA, pointsB);
-    const getPosPct = (val) => {
-        const pct = ((val - trackRange.min) / (trackRange.max - trackRange.min)) * 90 + 5;
-        return Math.max(0, Math.min(100, pct));
+    // Actualizar Pista con escala manual
+    const TRACK_PAD = 5;
+    const TRACK_SPAN = 90;
+
+    let trackMin = Number(s.trackMin);
+    let trackMax = Number(s.trackMax);
+
+    if (!Number.isFinite(trackMin)) trackMin = -4000;
+    if (!Number.isFinite(trackMax)) trackMax = 4000;
+
+    if (trackMax <= trackMin) {
+        trackMax = trackMin + 1000;
+    }
+
+    const mapXRawPct = (x) => {
+        return TRACK_PAD + ((x - trackMin) / (trackMax - trackMin)) * TRACK_SPAN;
     };
 
-    const pctA = getPosPct(curXA);
-    const pctB = getPosPct(curXB);
+    const clampTrackPct = (pct) => {
+        return Math.max(TRACK_PAD, Math.min(100 - TRACK_PAD, pct));
+    };
 
-    markerA.style.left = `${pctA}%`;
-    markerB.style.left = `${pctB}%`;
-    labelA.style.left = `${pctA}%`;
-    labelB.style.left = `${pctB}%`;
-    labelA.textContent = `xA=${curXA.toFixed(1)}m`;
-    labelB.textContent = `xB=${curXB.toFixed(1)}m`;
+    const getTrackPositionInfo = (x) => {
+        const rawPct = mapXRawPct(x);
+        return {
+            rawPct,
+            visiblePct: clampTrackPct(rawPct),
+            isInside: rawPct >= TRACK_PAD && rawPct <= 100 - TRACK_PAD,
+            isLeftOutside: rawPct < TRACK_PAD,
+            isRightOutside: rawPct > 100 - TRACK_PAD
+        };
+    };
+
+    const posA = getTrackPositionInfo(curXA);
+    const posB = getTrackPositionInfo(curXB);
+
+    markerA.style.left = `${posA.visiblePct}%`;
+    markerB.style.left = `${posB.visiblePct}%`;
+    labelA.style.left = `${posA.visiblePct}%`;
+    labelB.style.left = `${posB.visiblePct}%`;
+
+    markerA.classList.toggle('offscale-left', posA.isLeftOutside);
+    markerA.classList.toggle('offscale-right', posA.isRightOutside);
+    markerA.classList.toggle('offscale', !posA.isInside);
+
+    markerB.classList.toggle('offscale-left', posB.isLeftOutside);
+    markerB.classList.toggle('offscale-right', posB.isRightOutside);
+    markerB.classList.toggle('offscale', !posB.isInside);
+
+    const tLabel = s.tEval.toFixed(1);
+
+    labelA.textContent = posA.isInside
+        ? `xA(${tLabel}s)= ${curXA.toFixed(1)}m`
+        : posA.isLeftOutside
+            ? `xA(${tLabel}s)= ${curXA.toFixed(1)}m < ${trackMin.toFixed(0)}m`
+            : `xA(${tLabel}s)= ${curXA.toFixed(1)}m > ${trackMax.toFixed(0)}m`;
+
+    labelB.textContent = posB.isInside
+        ? `xB(${tLabel}s)= ${curXB.toFixed(1)}m`
+        : posB.isLeftOutside
+            ? `xB(${tLabel}s)= ${curXB.toFixed(1)}m < ${trackMin.toFixed(0)}m`
+            : `xB(${tLabel}s)= ${curXB.toFixed(1)}m > ${trackMax.toFixed(0)}m`;
 
     // Línea de separación
-    const left = Math.min(pctA, pctB);
-    const width = Math.abs(pctA - pctB);
+    const left = Math.min(posA.visiblePct, posB.visiblePct);
+    const width = Math.abs(posA.visiblePct - posB.visiblePct);
     sepLine.style.left = `${left}%`;
     sepLine.style.width = `${width}%`;
     sepLine.style.display = width > 2 ? 'block' : 'none';
+
+    if (posA.isInside && posB.isInside) {
+        sepLine.classList.remove('offscale-separation');
+    } else {
+        sepLine.classList.add('offscale-separation');
+    }
 
     // Badge y efectos de encuentro
     if (deltaX < 1) {
@@ -822,13 +876,34 @@ function updateEncuentro() {
         trackContainer.classList.add('near-encounter');
     } else {
         badge.classList.add('hidden');
-        trackContainer.classList.toggle('near-encounter', deltaX < (trackRange.max - trackRange.min) * 0.05);
+        trackContainer.classList.toggle('near-encounter', deltaX < (trackMax - trackMin) * 0.05);
     }
 
     // Actualizar labels de la pista
-    document.getElementById('track-min').textContent = `${trackRange.min.toFixed(0)}m`;
-    document.getElementById('track-center').textContent = `${((trackRange.min + trackRange.max) / 2).toFixed(0)}m`;
-    document.getElementById('track-max').textContent = `${trackRange.max.toFixed(0)}m`;
+    const trackMinEl = document.getElementById('track-min');
+    const trackMaxEl = document.getElementById('track-max');
+    const trackOriginEl = document.getElementById('track-origin');
+    const trackOriginTick = document.getElementById('track-origin-tick');
+
+    trackMinEl.textContent = `${trackMin.toFixed(0)}m`;
+    trackMaxEl.textContent = `${trackMax.toFixed(0)}m`;
+
+    trackMinEl.style.left = `${TRACK_PAD}%`;
+    trackMaxEl.style.left = `${100 - TRACK_PAD}%`;
+
+    const originVisible = trackMin <= 0 && trackMax >= 0;
+
+    if (originVisible) {
+        const originPct = getTrackPositionInfo(0).visiblePct;
+        trackOriginEl.classList.remove('hidden');
+        trackOriginTick.classList.remove('hidden');
+        trackOriginEl.style.left = `${originPct}%`;
+        trackOriginTick.style.left = `${originPct}%`;
+        trackOriginEl.textContent = '0m';
+    } else {
+        trackOriginEl.classList.add('hidden');
+        trackOriginTick.classList.add('hidden');
+    }
 
     // Stats Grid
     document.getElementById('track-xa').textContent = curXA.toFixed(2);
@@ -970,7 +1045,7 @@ function resetSim(type) {
         document.getElementById('mrua-teval-slider').value = 3; document.getElementById('mrua-teval-num').value = 3;
         updateMRUA();
     } else {
-        state.encuentro = { aA: -10, viA: 100, xiA: 2000, aB: 10, viB: 0, xiB: 0, tMax: 50, tEval: 20, isPlaying: false, speed: 1 };
+        state.encuentro = { aA: -10, viA: 100, xiA: 2000, aB: 10, viB: 0, xiB: 0, tMax: 50, tEval: 0, trackMin: -4000, trackMax: 4000, isPlaying: false, speed: 1 };
         // Sync UI - A
         document.getElementById('enc-aa-slider').value = -10; document.getElementById('enc-aa-num').value = -10;
         document.getElementById('enc-via-slider').value = 100; document.getElementById('enc-via-num').value = 100;
@@ -979,9 +1054,12 @@ function resetSim(type) {
         document.getElementById('enc-ab-slider').value = 10; document.getElementById('enc-ab-num').value = 10;
         document.getElementById('enc-vib-slider').value = 0; document.getElementById('enc-vib-num').value = 0;
         document.getElementById('enc-xib-slider').value = 0; document.getElementById('enc-xib-num').value = 0;
+        // Track Scale
+        document.getElementById('enc-track-min-slider').value = -4000; document.getElementById('enc-track-min-num').value = -4000;
+        document.getElementById('enc-track-max-slider').value = 4000; document.getElementById('enc-track-max-num').value = 4000;
         // Global
         document.getElementById('enc-tmax-slider').value = 50; document.getElementById('enc-tmax-num').value = 50;
-        document.getElementById('enc-teval-slider').value = 20; document.getElementById('enc-teval-num').value = 20;
+        document.getElementById('enc-teval-slider').value = 0; document.getElementById('enc-teval-num').value = 0;
         updateEncuentro();
     }
 }
@@ -1034,6 +1112,11 @@ document.addEventListener('DOMContentLoaded', () => {
     syncInputsMapped('enc', 'xib', state.encuentro, 'xiB', updateEncuentro);
     syncInputsMapped('enc', 'tmax', state.encuentro, 'tMax', updateEncuentro);
     syncInputsMapped('enc', 'teval', state.encuentro, 'tEval', updateEncuentro);
+    
+    // Track scale sync
+    syncInputsMapped('enc-track', 'min', state.encuentro, 'trackMin', updateEncuentro);
+    syncInputsMapped('enc-track', 'max', state.encuentro, 'trackMax', updateEncuentro);
+
     handleAnimation('encuentro');
 
     // Inicializar botones de ajuste fino
